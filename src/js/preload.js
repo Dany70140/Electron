@@ -8,4 +8,9 @@ contextBridge.exposeInMainWorld('versions', {
     getVersions: () => ipcRenderer.invoke('get-versions')
 })
 
-console.log("preload chagré avec succès")
+contextBridge.exposeInMainWorld('todosAPI', {
+    // fonction qui récupère la liste des tâches via IPC
+    getAll: () => ipcRenderer.invoke('todos:getAll')
+})
+
+console.log('Preload chargé avec succès !')
