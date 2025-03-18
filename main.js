@@ -57,7 +57,7 @@ function createWindow() {
 
     window.loadFile('src/pages/index.html');
 }
-// Fonction permettantr de créer un menu personnalisé
+// Fonction permettant de créer un menu personnalisé
 function createMenu() {
     //Créer un tableau qui va représenter le menu
     const template = [
@@ -147,5 +147,29 @@ ipcMain.handle('todos:getAll', async ()=> {
     } catch(error) {
         dialog.showErrorBox("Erreur technique","Impossible de récupérer la liste des tâches")
         return [] // Retourne une promesse avec unn tableau vide
+    }
+})
+
+async function addTodo(title) {
+    try {
+        console.log(`Ajout d'une nouvelle tache: ${title}`)
+        const [result] = await pool.query(
+            'INSERT INTO todos (titre, termine) VALUES (?, ?)',
+            [title, 0]
+        )
+    } catch(error) {
+        console.log('Erreur lors de l\'ajout de la tâche:')
+        throw error
+    }
+
+}
+
+ipcMain.handle('todos:add', async (event,title) => {
+    try {
+         await addTodo(title)
+        return { success: true }
+    } catch(error) {
+        dialog.showErrorBox("Erreur technique","Impossible de récupérer la liste des tâches")
+        throw error
     }
 })
